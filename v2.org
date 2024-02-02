@@ -1,0 +1,48 @@
+#+TITLE:  V2: Granular Versioning of Standard Library Components
+#+AUTHOR: David Sankel <dsankel@adobe.com>, Darius <asdf>
+#+DATE: 2024-02-02
+#+OPTIONS: html-postamble:nil title:nil
+
+* Abstract
+  Functionality in the C++ standard library, like most other libraries,
+  changes over time to account for new language features and address defects.
+  When changes result in backwards-incompatible API changes or ABI breakage,
+  standard library authors are forced to introduce a new name for the
+  component. Unfortunately, the resulting name mishmash has resulted in a
+  seriously incoherent and confusing offering, especially for new users. This
+  proposal suggests V2: a simple, granular, convention for component upgrades.
+
+  | Original          | Incoherent               | As-if V2 were used |
+  |-------------------+--------------------------+--------------------|
+  | ~std::function~   | ~std::copyable_function~ | ~std::function2~   |
+  | ~std::thread~     | ~std::jthread~           | ~std::thread2~     |
+  | ~std::lock_guard~ | ~std::scoped_lock~       | ~std::lock_guard2~ |
+  | ~std::sort~       | ~std::ranges::sort~      | ~std::sort2~       |
+
+* History
+  - Problem came up with std::ranges discussion
+  - std2 was proposed as a solution
+    - Too cumbersome to use (different prefix)
+    - Implies a new version of the whole library, which isn't granular enough
+
+* Proposal
+  - Adopt usage of a suffix 2,3,...,n
+  - Benefits of this convention
+    - Individual components evolve independently
+    - Low syntactic overhead
+    - User experience is improved. The "better" name is always available.
+    - Facilitates movement to new APIs for users
+  - Will see direct use in hash maps and hash set improvements
+
+* Tradeoffs
+  - atan2
+  - Opens the door for updates, but we must be conservative when introducing
+    new versions. Users can only take so much instability.
+  - Makes possible to change APIs drastically, but we must consider adoption costs
+
+* Conclusion
+
+* TODO
+  - Figure out how to improve the preamble by making it into a function so it
+    can get, e.g., a paper number and audience so I don't need to hardcode them
+    in .dir-locals.el.
